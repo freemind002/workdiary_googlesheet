@@ -1,0 +1,2 @@
+# workdiary_googlesheet
+用pygsheets在google sheet模擬工作日誌的使用
