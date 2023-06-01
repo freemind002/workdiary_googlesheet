@@ -14,3 +14,5 @@
     
 ## 參.成果展示
 可以參考此[組員工作日誌](https://docs.google.com/spreadsheets/d/1BPKNWCs3J5lHxFwUegVmUnHoQkrCeaWHVrXRln57-Qs)的內容
+## 肆.參考資料
+### (壹).[pygsheets docs](https://pygsheets.readthedocs.io/en/stable/#)
