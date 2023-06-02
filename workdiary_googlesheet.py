@@ -89,11 +89,12 @@ class WorkdiaryGooglesheet(object):
             sheet_updatedate.append_table(values=member_list, start='A2')
             # 進行條件式格式設定，將假日的部份用條件式格式設定變色
             self.add_conditional_formatting(sheet_updatedate, holiday_list)
-            # 在「工作日誌列表」的工作表增加hyperlink
+            # 在「工作日誌列表」的工作表增加hyperlink，以倒序的方式排列
             sheet_updatedate_url = re.search(r"#gid=(\d+)", sheet_updatedate.url).group(0)
             sheet_datalist = sheet.worksheet_by_title('工作日誌列表')
+            sheet_datalist.insert_rows(1)
             value = f'=HYPERLINK("{sheet_updatedate_url}", "{new_tab}")'
-            sheet_datalist.append_table(values=[[value]])
+            sheet_datalist.update_value('A2', value)
         else:
             exists_member_list = [i[''] for i in exits_records_list]
             member_list = [[i] for i in member_list if i not in exists_member_list]
