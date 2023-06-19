@@ -100,6 +100,9 @@ class WorkdiaryGooglesheet(object):
             member_list = [[i] for i in member_list if i not in exists_member_list]
             sheet_updatedate.append_table(values=member_list, start='A2')
 
+        # 凍結第一列
+        sheet_updatedate.frozen_rows = 1
+
     def run_all(self):
         member_list = self.get_member_list()
         holiday_list = self.get_holiday_list()
