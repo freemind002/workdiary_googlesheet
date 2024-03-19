@@ -6,7 +6,6 @@ from typing import List, Text
 import arrow
 import polars as pl
 import pygsheets
-import settings
 
 
 class WorkdiaryGooglesheet(object):
