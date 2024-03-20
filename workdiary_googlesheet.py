@@ -97,7 +97,7 @@ class WorkdiaryGooglesheet(object):
         """
         total_cols, row_count = sheet_updatedate.cols, sheet_updatedate.rows
         column_num_list = [letter for letter in string.ascii_uppercase] + [
-            letter1 + letter2
+            f"{letter1}{letter2}"
             for letter1 in string.ascii_uppercase
             for letter2 in string.ascii_uppercase
         ]
@@ -142,7 +142,7 @@ class WorkdiaryGooglesheet(object):
         # 查看該工作表是否存在，如不存在則新增並插入title
         new_tab = f"{update_date_list[0]}年{update_date_list[1]}月"
         if not wks_title_dic.get(new_tab):
-            month_date_list.insert(0, "組員名單")
+            month_date_list.insert(0, self.member_sheet)
             self.gs_url.add_worksheet(
                 title=new_tab,
                 rows=len(member_list) + 10,
