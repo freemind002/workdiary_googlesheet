@@ -21,12 +21,11 @@ class WorkdiaryGooglesheet(object):
         self.update_date = arrow.now().format("YYYY-MM-DD")
         self.member_sheet, self.holiday_sheet = "組員名單", "假日名單"
 
-    def get_member_list(self):
+    def get_member_list(self) -> List[Text]:
         """取得組員名單
 
         Returns:
-            >>> get_member_list():
-            List[Text]
+            List[Text]: ["組員001", "組員002", .....]
         """
         sheet = self.gs_url.worksheet_by_title(self.member_sheet)
         member_list = sheet.get_all_records(numericise_data=False)
@@ -41,12 +40,11 @@ class WorkdiaryGooglesheet(object):
 
         return member_list
 
-    def get_month_holiday_list(self):
+    def get_month_holiday_list(self) -> List[Text]:
         """取得該月的假日名單
 
         Returns:
-            >>> get_month_holiday_list():
-            List[Text]
+            List[Text]: ["2024-01-01", ....]
         """
         sheet = self.gs_url.worksheet_by_title(self.holiday_sheet)
         holiday_list = sheet.get_all_records(numericise_data=False)
@@ -69,16 +67,16 @@ class WorkdiaryGooglesheet(object):
 
         return month_holiday_list
 
-    def get_month_date_list(self):
+    def get_month_date_list(self) -> List[Text]:
         """取得該月的所有日期名單
 
         Returns:
-            >>> get_month_date_list():
-            List[Text]
+            List[Text]: ["2024-01-01", "2024-01-02", ...]
         """
-        update_date_list = self.update_date.split("-")
-        first_day = arrow.Arrow(int(update_date_list[0]), int(update_date_list[1]), 1)
-        last_day = first_day.shift(months=1).shift(days=-1)
+        first_day, last_day = (
+            arrow.get(self.update_date).floor("months"),
+            arrow.get(self.update_date).ceil("months"),
+        )
         month_date_list = [
             date.format("YYYY-MM-DD")
             for date in arrow.Arrow.range("day", first_day, last_day)
