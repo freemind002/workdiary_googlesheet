@@ -9,8 +9,14 @@
 ### (貳).關於google sheet
 #### 一.建立新的goole sheet
 #### 二.google sheet的設定
-檔案>共用>與他人共用>新增使用者和群組。在此處將剛剛的獲得的account新增為編輯者    
+檔案>共用>與他人共用>新增使用者和群組。在此處將剛剛的獲得的account新增為編輯者
+### (參).程式碼執行
+```
+python workdiary_googlesheet.py
+```
 ## 參.成果展示
 可以參考此[組員工作日誌](https://docs.google.com/spreadsheets/d/1BPKNWCs3J5lHxFwUegVmUnHoQkrCeaWHVrXRln57-Qs)的內容
 ## 肆.參考資料
-### (壹).[pygsheets docs](https://pygsheets.readthedocs.io/en/stable/#)
+| 參考資料 |
+| ---- |
+| [pygsheets docs](https://pygsheets.readthedocs.io/en/stable/#) |
