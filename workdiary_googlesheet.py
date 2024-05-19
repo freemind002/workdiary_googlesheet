@@ -33,9 +33,7 @@ class WorkdiaryGooglesheet(object):
             pl.LazyFrame(member_list)
             .select(pl.col(self.member_sheet))
             .collect()
-            .to_numpy()
-            .flatten()
-            .tolist()
+            .to_dict(as_series=False)["組員名單"]
         )
 
         return member_list
@@ -60,9 +58,7 @@ class WorkdiaryGooglesheet(object):
                 == year_month
             )
             .collect()
-            .to_numpy()
-            .flatten()
-            .tolist()
+            .to_dict(as_series=False)[f"{self.holiday_sheet}_{year}"]
         )
 
         return month_holiday_list
@@ -174,9 +170,7 @@ class WorkdiaryGooglesheet(object):
                 pl.LazyFrame(exits_member_list)
                 .select(pl.col("組員名單"))
                 .collect()
-                .to_numpy()
-                .flatten()
-                .tolist()
+                .to_dict(as_series=False)["組員名單"]
             )
             not_exist_member_list = list(set(member_list) - set(exits_member_list))
             if not_exist_member_list:
