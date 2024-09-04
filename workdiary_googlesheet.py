@@ -6,17 +6,12 @@ from typing import List, Text
 import arrow
 import polars as pl
 import pygsheets
+import settings
 
 
 class WorkdiaryGooglesheet(object):
     def __init__(self) -> None:
-        self.json_path = ["src", "api_key.json"]
-        self.survey_url = (
-            "https://docs.google.com/spreadsheets/d/XXXXXXXXXXXXXXXXXXXXXXXXXX/"
-        )
-        self.gs_url = pygsheets.authorize(
-            service_account_file=Path(__file__).parent.joinpath(*self.json_path)
-        ).open_by_url(self.survey_url)
+        self.gs_mgr = settings.gs_mgr
         self.red_num, self.green_num, self.blue_num = 1, 0, 0
         self.update_date = arrow.now().format("YYYY-MM-DD")
         self.member_sheet, self.holiday_sheet = "組員名單", "假日名單"
@@ -27,7 +22,7 @@ class WorkdiaryGooglesheet(object):
         Returns:
             List[Text]: ["組員001", "組員002", .....]
         """
-        sheet = self.gs_url.worksheet_by_title(self.member_sheet)
+        sheet = self.gs_mgr.worksheet_by_title(self.member_sheet)
         member_list = sheet.get_all_records(numericise_data=False)
         member_list = (
             pl.LazyFrame(member_list)
@@ -44,7 +39,7 @@ class WorkdiaryGooglesheet(object):
         Returns:
             List[Text]: ["2024-01-01", ....]
         """
-        sheet = self.gs_url.worksheet_by_title(self.holiday_sheet)
+        sheet = self.gs_mgr.worksheet_by_title(self.holiday_sheet)
         holiday_list = sheet.get_all_records(numericise_data=False)
         year, year_month = (
             arrow.get(self.update_date).format("YYYY"),
@@ -130,22 +125,22 @@ class WorkdiaryGooglesheet(object):
             month_holiday_list (List[Text]): 該月的假日名單
             month_date_list (List[Text]): 該月的每一日的日期
         """
-        wks_list = self.gs_url.worksheets()
+        wks_list = self.gs_mgr.worksheets()
         wks_title_dic = {wks.title: wks.title for wks in wks_list}
         update_date_list = self.update_date.split("-")
         # 查看該工作表是否存在，如不存在則新增並插入title
         new_tab = f"{update_date_list[0]}年{update_date_list[1]}月"
         if not wks_title_dic.get(new_tab):
             month_date_list.insert(0, self.member_sheet)
-            self.gs_url.add_worksheet(
+            self.gs_mgr.add_worksheet(
                 title=new_tab,
                 rows=len(member_list) + 10,
                 cols=len(month_date_list) + 10,
             )
-            sheet_updatedate = self.gs_url.worksheet_by_title(new_tab)
+            sheet_updatedate = self.gs_mgr.worksheet_by_title(new_tab)
             sheet_updatedate.update_values(crange="A1", values=[month_date_list])
         else:
-            sheet_updatedate = self.gs_url.worksheet_by_title(new_tab)
+            sheet_updatedate = self.gs_mgr.worksheet_by_title(new_tab)
 
         # 插入組員名單
         exits_member_list = sheet_updatedate.get_all_records(numericise_data=False)
@@ -159,7 +154,7 @@ class WorkdiaryGooglesheet(object):
             sheet_updatedate_url = re.search(r"#gid=(\d+)", sheet_updatedate.url).group(
                 0
             )
-            sheet_datalist = self.gs_url.worksheet_by_title("工作日誌列表")
+            sheet_datalist = self.gs_mgr.worksheet_by_title("工作日誌列表")
             value = f'=HYPERLINK("{sheet_updatedate_url}", "{new_tab}")'
             sheet_datalist.insert_rows(row=1, number=1, values=[[value]])
             # 凍結第一列
