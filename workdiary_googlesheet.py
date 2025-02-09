@@ -1,6 +1,5 @@
 import re
 import string
-from pathlib import Path
 from typing import List, Text
 
 import arrow
@@ -159,6 +158,8 @@ class WorkdiaryGooglesheet(object):
             sheet_datalist.insert_rows(row=1, number=1, values=[[value]])
             # 凍結第一列
             sheet_updatedate.frozen_rows = 1
+            # 凍結第一行
+            sheet_updatedate.frozen_cols = 1
         # 如果組員名單存在，則將組員名單與組員名單的的那個sheet資料進行比較
         else:
             exits_member_list = (
